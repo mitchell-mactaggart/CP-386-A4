@@ -1,3 +1,14 @@
+ /*
+Name: Hassan Siddiqui
+Email: sidd1850@mylaurier.ca
+Student ID: 170691850
+Github Username: Sidd1850
+
+Name: Mitchell MacTaggart
+Email: mact6000@mylaurier.ca
+Student ID: 160886000
+GitHub Username: mitchell-macTaggart
+*/
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,8 +24,10 @@
 int resources, customers, safe;
 int *available, **maximum, **allocation, **need;
 
+void runProgram();
 void *runThread(void);
 void **fileRead(char *filename);
+int *checkSafeSeq();
 
 
 int main (int argc, char *argv[]) {
@@ -24,10 +37,11 @@ int main (int argc, char *argv[]) {
         printf("4 parameters needed!\n");
         return -1;
     }
+
     // Intialize variables
     resources = argc - 1;
     safe = 0;
-    char *userInput = malloc(sizeof(char) * MAXSIZE);
+
     // Intialize arrays
     available = malloc(sizeof(int) * resources);
     for (int i = 1; i < argc; i++)
@@ -45,30 +59,55 @@ int main (int argc, char *argv[]) {
         need[i] = malloc(sizeof(int) * resources);
     }
 
+    //starting output
+    printf("Amount of Customers: %d\n", customers);
+    printf("Available resources: ");
+    for(int i = 0; i < resources; i++){
+        printf("%d ", available[i]);
+    }
+    printf("\n");
+
+    printf("Maximum resources:\n");
+    for (int i = 0; i < customers; i++){
+        for (int j = 0; j < n; j++){
+            printf("%d", maximum[i][j]);
+            if (j < resources - 1)
+                printf(" ");
+        }
+        printf("\n");
+    }
+
+    runProgram();
+    return 0;
+}
+
+void runProgram(){
+
 }
 
 void *runThread(void *thread){
-    int *tid = (int *)thread;
-    printf("--> Customer/Thread %d\n", *tid);
+
+    int *threadId = (int *)thread;
+    printf("--> Customer/Thread %d\n", *threadId);
 
     printf("Allocated resources:  ");
 
     for(int i = 0; i < resources; i++){
-        printf("%d ", allocation[*tid][i]);
+        printf("%d ", allocation[*threadId][i]);
     }
     printf("\n");
 
     printf("Needed: ");
 
     for(int i = 0; i < resources; i++){
-        printf("%d ", need[*tid][i]);
+        printf("%d ", need[*threadId][i]);
     }
     printf("\n");
 
     printf("Available:  ");
 
     for(int i = 0; i < resources; i++){
-        printf("%d ", available[*tid][i]);
+        printf("%d ", available[*threadId][i]);
     }
     printf("\n");
 
@@ -81,7 +120,7 @@ void *runThread(void *thread){
     printf("New Available:  ");
 
     for (int i = 0; i < resources; i++){
-        available[i] = available[i] + allocation[*tid][i];
+        available[i] = available[i] + allocation[*threadId][i];
         printf("%d ", available[i]);
     }
 
@@ -158,11 +197,11 @@ int **fileRead(char *filename) {
     }
     return new_max;
 }
+
 int *checkSafeSeq() {
+    //initalize varibles
 	int *sq = malloc(sizeof(int) * customers);
-
 	int *wk = malloc(sizeof(int) * resources);
-
 	int *fnsh = malloc(sizeof(int) * customers);
 
 	int x;
