@@ -49,7 +49,9 @@ int main (int argc, char *argv[]) {
         available[i - 1] = atoi(argv[i]);
     }
 
+	//getting maximum value from readme file
     maximum = fileRead(FILENAME);
+	//declaring allocation variables
 
     allocation = malloc(sizeof(int *) * customers);
     need = malloc(sizeof(int *) * customers);
@@ -59,7 +61,7 @@ int main (int argc, char *argv[]) {
         need[i] = malloc(sizeof(int) * resources);
     }
 
-    //starting output
+	//starting output and printing each variable
     printf("Amount of Customers: %d\n", customers);
     printf("Available resources: ");
     for(int i = 0; i < resources; i++){
@@ -77,6 +79,7 @@ int main (int argc, char *argv[]) {
         printf("\n");
     }
 
+	//calling the run program function to allow us to run the different aspects of the program
     runProgram();
     return 0;
 }
@@ -90,8 +93,10 @@ void runProgram(){
 		if (strlen(uip) > 0 && uip[strlen(uip) - 1] == '\n') {
 			uip[strlen(uip) - 1] = '\0';
 		}
-		if (strstr(uip, "Run")) //user enters Run
+		if (strstr(uip, "RUN")) // This is to check if a User enters RUN
 				{
+			//Calls the safety sequence program
+			//This part is to allow the program to run
 			sq = checkSafeSeq();
 			if (safe == 1) {
 				for (int x = 0; x < customers; x++) {
@@ -106,14 +111,18 @@ void runProgram(){
 			} else {
 				printf("Warning: In a unsafe state, fix before running.\n");
 			}
-		} else if (strstr(uip, "*")) // user enters *
+		} else if (strstr(uip, "*")) // This is here to check if the user inputs *
 				{
+			//This is to allow the program to print all variables like
+
+			//Available resources are printed
 			printf("Available Resources:\n");
 			for (int x = 0; x < resources; x++) {
 				printf("%d ", available[x]);
 			}
 			printf("\n");
 
+			//Maximum resources are printed
 			printf("Maxmium Resources:\n");
 			for (int x = 0; x < customers; x++) {
 				for (int y = 0; y < resources; y++) {
@@ -124,6 +133,7 @@ void runProgram(){
 				printf("\n");
 			}
 
+			//Allocated resources are printed
 			printf("Allocated Resources:\n");
 			for (int x = 0; x < customers; x++) {
 				for (int y = 0; y < resources; y++) {
@@ -134,6 +144,7 @@ void runProgram(){
 				printf("\n");
 			}
 
+			//needed resources are printed
 			printf("Needed Resources:\n");
 			for (int x = 0; x < customers; x++) {
 				for (int y = 0; y < resources; y++) {
@@ -143,8 +154,9 @@ void runProgram(){
 				}
 				printf("\n");
 			}
-		} else if (strstr(uip, "RQ")) // user enters RQ
+		} else if (strstr(uip, "RQ")) // This is to check if the user enters RQ
 				{
+			//This bit allows the program to allocate resources
 			int *sizeArray = malloc(sizeof(int) * (resources + 1));
 			char *cusID = NULL;
 			cusID = strtok(uip, " ");
@@ -156,7 +168,7 @@ void runProgram(){
 				cusID = strtok(NULL, " ");
 				ct++;
 			}
-
+			//Variable initialization and forloops for processings
 			int customerAmount = sizeArray[0];
 			if (customerAmount < customers && ct == resources + 2) {
 				for (int x = 0; x < resources; x++) {
@@ -166,6 +178,7 @@ void runProgram(){
 						need[customerAmount][x] = 0;
 					}
 				}
+				//This is a fail safe and checks for any irregularities in the users inputs
 			} else {
 				if (customerAmount >= customers) {
 					printf("Thread out of bounds, please try again.\n");
@@ -174,6 +187,7 @@ void runProgram(){
 				}
 			}
 			free(sizeArray);
+			//calls the safety program again to see if it returns safe or unsafe
 			sq = checkSafeSeq();
 			printf("Request satisfied.\n");
 			if (sq[0] == -1) {
@@ -183,8 +197,9 @@ void runProgram(){
 				safe = 1;
 				printf("In a Safe State.\n");
 			}
-		} else if (strstr(uip, "RL")) // user enters RL
+		} else if (strstr(uip, "RL")) // checks to see if user entered RL
 				{
+			//The purpose of this bit is to deallotcate resources
 			int *sizeArray = malloc(sizeof(int) * (resources + 1));
 			char *cusID = NULL;
 			cusID = strtok(uip, " ");
@@ -199,7 +214,7 @@ void runProgram(){
 			}
 
 			int customerAmount = sizeArray[0];
-			// Remove from allocation
+			// Resources are getting deallocated here
 			if (customerAmount < customers && ct == resources + 2) {
 				for (int x = 0; x < resources; x++) {
 					if (sizeArray[x + 1] <= allocation[customerAmount][x]) {
@@ -228,7 +243,8 @@ void runProgram(){
 				safe = 1;
 				printf("In a Safe State.\n");
 			}
-		} else if (strstr(uip, "exit")) // user enters exit
+		} else if (strstr(uip, "exit")) // Checks to see if the user enters EXIT
+				//This will exit the code
 				{
 			free(maximum);
 			free(allocation);
@@ -243,6 +259,7 @@ void runProgram(){
 	}
 }
 
+//This is the main run function where the bankers algorithm can proceed with requests and processing
 void *runThread(void *thread){
 
     int *threadId = (int *)thread;
@@ -268,6 +285,7 @@ void *runThread(void *thread){
         printf("%d ", available[i]);
     }
     printf("\n");
+	//Shows the updates on the algorithm
 
     printf("Thread has started\n");
     sleep(1);
@@ -286,10 +304,13 @@ void *runThread(void *thread){
     pthread_exit(NULL);
 
 }
+//This function opens the sample document that has all the customer data in, it then
+//reads said file and processes max value for further processing in the program
 
 int **fileRead(char *filename) {
 
     FILE *fp = fopen(filename, "r");
+	//Checks to see if the file was opened or not and if not then an error message is printed
     if (!fp)
     {
         printf("Error opening file, error code -1...Exiting.\n");
@@ -300,7 +321,7 @@ int **fileRead(char *filename) {
     fstat(fileno(fp), &st);
     char* fileContent = (char*)malloc(((int)st.st_size + 1) * sizeof(char));
     fileContent[0] = '\0';
-
+//Checking file content
     while (!feof(fp))
     {
         char line[100];
