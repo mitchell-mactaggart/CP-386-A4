@@ -20,19 +20,55 @@ int main (int argc, char *argv[]) {
 
 }
 
-void *runThread(void){
+void *runThread(void *thread){
+    int *tid = (int *)thread;
+    printf("--> Customer/Thread %d\n", *tid);
 
-}
+    printf("Allocated resources:  ");
 
-int argumentInputs(){
+    for(int i = 0; i < resources; i++){
+        printf("%d ", allocation[*tid][i]);
+    }
+    printf("\n");
+
+    printf("Needed: ");
+
+    for(int i = 0; i < resources; i++){
+        printf("%d ", need[*tid][i]);
+    }
+    printf("\n");
+
+    printf("Available:  ");
+
+    for(int i = 0; i < resources; i++){
+        printf("%d ", available[*tid][i]);
+    }
+    printf("\n");
+
+    printf("Thread has started\n");
+    sleep(1);
+    printf("Thread has finished\n");
+    sleep(1);
+    printf("Thread is releasing resources\n");
+    sleep(1);
+    printf("New Available:  ");
+
+    for (int i = 0; i < resources; i++){
+        available[i] = available[i] + allocation[*tid][i];
+        printf("%d ", available[i]);
+    }
+
+    printf("\n");
+    pthread_exit(NULL);
 
 }
 
 int **fileRead(char *filename) {
+
     FILE *fp = fopen(filename, "r");
     if (!fp)
     {
-        printf("Error in opening input file, error code -1...Exiting.\n");
+        printf("Error opening file, error code -1...Exiting.\n");
         return NULL;
     }
 
