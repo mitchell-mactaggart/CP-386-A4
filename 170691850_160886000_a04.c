@@ -158,5 +158,61 @@ int **fileRead(char *filename) {
     }
     return new_max;
 }
+int *checkSafeSeq() {
+	int *sq = malloc(sizeof(int) * customers);
 
-//
+	int *wk = malloc(sizeof(int) * resources);
+
+	int *fnsh = malloc(sizeof(int) * customers);
+
+	int x;
+	int y;
+
+	for (x = 0; x < resources; x++) {
+		wk[x] = available[x];
+	}
+
+	for (x = 0; x < customers; x++) {
+		fnsh[x] = 0;
+	}
+
+	int cnt = 0;
+	while (cnt < customers) {
+		int fg = 0;
+		for (x = 0; x < customers; x++) {
+			if (fnsh[x] == 0) {
+				int tmp = 1;
+				y = 0;
+				while (y < resources && tmp == 1) {
+					if (need[x][y] > wk[y]) {
+						tmp = 0;
+					}
+					y++;
+				}
+
+				if (tmp == 1) {
+					sq[cnt] = x;
+					fnsh[x] = 1;
+					fg = 1;
+					cnt++;
+					for (int y = 0; y < resources; y++) {
+						wk[y] = wk[y] + allocation[x][y];
+					}
+				}
+			}
+		}
+		int q = 0;
+		if (fg == 0) {
+			for (q < customers; q++) {
+				sq[q] = -1;
+			}
+			free(wk);
+			free(fnsh);
+			return sq;
+		}
+	}
+
+	free(wk);
+	free(fnsh);
+	return sq;
+}
