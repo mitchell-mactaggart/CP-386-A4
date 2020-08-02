@@ -82,7 +82,168 @@ int main (int argc, char *argv[]) {
 }
 
 void runProgram(){
+	char *uip = malloc(sizeof(char) * MAXSIZE);
+	// Loop until "exit" is inputted
+	while (1) {
+		printf("Enter Command('RQ','RL','*','RUN','exit'): ");
+		fgets(uip, MAXSIZE, stdin);
+		if (strlen(uip) > 0 && uip[strlen(uip) - 1] == '\n') {
+			uip[strlen(uip) - 1] = '\0';
+		}
+		if (strstr(uip, "Run")) //user enters Run
+				{
+			sq = checkSafeSeq();
+			if (safe == 1) {
+				for (int x = 0; x < customers; x++) {
+					int thread = sq[x];
+					pthread_t threadId;
+					pthread_attr_t attr;
+					pthread_attr_init(&attr);
+					pthread_create(&threadId, &attr, runThread,
+							(void *) &thread);
+					pthread_join(threadId, NULL);
+				}
+			} else {
+				printf("Warning: In a unsafe state, fix before running.\n");
+			}
+		} else if (strstr(uip, "*")) // user enters *
+				{
+			printf("Available Resources:\n");
+			for (int x = 0; x < resources; x++) {
+				printf("%d ", available[x]);
+			}
+			printf("\n");
 
+			printf("Maxmium Resources:\n");
+			for (int x = 0; x < customers; x++) {
+				for (int y = 0; y < n; y++) {
+					printf("%d", maximum[x][y]);
+					if (y < resources - 1)
+						printf(" ");
+				}
+				printf("\n");
+			}
+
+			printf("Allocated Resources:\n");
+			for (int x = 0; x < customers; x++) {
+				for (int y = 0; y < n; y++) {
+					printf("%d", allocation[x][y]);
+					if (y < resources - 1)
+						printf(" ");
+				}
+				printf("\n");
+			}
+
+			printf("Needed Resources:\n");
+			for (int x = 0; x < customers; x++) {
+				for (int y = 0; y < n; y++) {
+					printf("%d", need[x][y]);
+					if (y < resources - 1)
+						printf(" ");
+				}
+				printf("\n");
+			}
+		} else if (strstr(uip, "RQ")) // user enters RQ
+				{
+			int *sizeArray = malloc(sizeof(int) * (resources + 1));
+			char *cusID = NULL;
+			cusID = strtok(uip, " ");
+			int ct = 0;
+			while (cusID != NULL) {
+				if (ct > 0) {
+					sizeArray[ct - 1] = atoi(cusID);
+				}
+				cusID = strtok(NULL, " ");
+				ct++;
+			}
+
+			int customerAmount = sizeArray[0];
+			if (customerAmount < customers && ct == resources + 2) {
+				for (int x = 0; x < resources; x++) {
+					allocation[customerAmount][x] = sizeArray[x + 1];
+					need[customerAmount][x] = maximum[customerAmount][x]
+							- allocation[customerAmount][i];
+					if (need[customerAmount][x] < 0) {
+						need[customerAmount][x] = 0;
+					}
+				}
+			} else {
+				if (customerAmount >= customers) {
+					printf("Thread out of bounds, please try again.\n");
+				} else {
+					printf("Incorrect parameter count, please try again.\n");
+				}
+			}
+			free(sizeArray);
+			sq = checkSafeSeq();
+			printf("Request satisfied.\n");
+			if (sq[0] == -1) {
+				safe = 0;
+				printf("Warning: In a unsafe state, fix before running.\n");
+			} else {
+				safe = 1;
+				printf("In a Safe State.\n");
+			}
+		} else if (strstr(uip, "RL")) // user enters RL
+				{
+			int *sizeArray = malloc(sizeof(int) * (resources + 1));
+			char *cusID = NULL;
+			cusID = strtok(uip, " ");
+			int ct = 0;
+
+			while (cusID != NULL) {
+				if (ct > 0) {
+					sizeArray[ct - 1] = atoi(cusID);
+				}
+				cusID = strtok(NULL, " ");
+				ct++;
+			}
+
+			int customerAmount = sizeArray[0];
+			// Remove from allocation array
+			if (customerAmount < customers && ct == resources + 2) {
+				for (int x = 0; x < resources; x++) {
+					if (sizeArray[x + 1] <= allocation[customerAmount][x]) {
+						allocation[customerAmount][x] -= sizeArray[x + 1];
+						need[customerAmount][x] = maximum[customerAmount][x]
+								- allocation[customerAmount][x];
+					} else {
+						printf("Too many resources than allocated.\n");
+						break;
+					}
+				}
+			} else {
+				if (customerAmount >= customers) {
+					printf("Thread out of bounds, please try again.\n");
+				} else {
+					printf("Incorrect parameter count, please try again.\n");
+				}
+			}
+			free(sizeArray);
+			sq = checkSafeSeq();
+			printf("Request satisfied.\n");
+			if (sq[0] == -1) {
+				safe = 0;
+				printf("Warning: In a unsafe state, fix before running.\n");
+			} else {
+				safe = 1;
+				printf("In a Safe State.\n");
+			}
+		} else if (strstr(uip, "exit")) // user enters exit
+				{
+			free(maximum);
+			free(allocation);
+			free(need);
+			free(available);
+			free(sq);
+			return 0;
+		} else // user enters invaild input
+		{
+			printf(
+					"\"%s\" Invalid input, valid inputs['RQ','RL','*','Run','exit'].\n",
+					uip);
+		}
+	}
 }
 
 void *runThread(void *thread){
