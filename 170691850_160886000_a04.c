@@ -22,7 +22,7 @@ GitHub Username: mitchell-macTaggart
 #define FILENAME "sample4_in.txt"
 
 int resources, customers, safe;
-int *available, **maximum, **allocation, **need, *sequence;
+int *available, **maximum, **allocation, **need, *sq;
 
 void runProgram();
 void *runThread(void *thread);
@@ -136,7 +136,7 @@ void runProgram(){
 
 			printf("Needed Resources:\n");
 			for (int x = 0; x < customers; x++) {
-				for (int y = 0; y < n; y++) {
+				for (int y = 0; y < resources; y++) {
 					printf("%d", need[x][y]);
 					if (y < resources - 1)
 						printf(" ");
