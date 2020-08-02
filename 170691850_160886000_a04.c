@@ -7,6 +7,7 @@
 #include <time.h>
 #include <sys/stat.h>
 
+#define MAXSIZE 256
 #define FILENAME "sample4_in.txt"
 
 int resources, customers, safe;
@@ -17,6 +18,32 @@ void **fileRead(char *filename);
 
 
 int main (int argc, char *argv[]) {
+    
+    if (argc < 2)
+    {
+        printf("4 parameters needed!\n");
+        return -1;
+    }
+    // Intialize variables
+    resources = argc - 1;
+    safe = 0;
+    char *userInput = malloc(sizeof(char) * MAXSIZE);
+    // Intialize arrays
+    available = malloc(sizeof(int) * resources);
+    for (int i = 1; i < argc; i++)
+    {
+        available[i - 1] = atoi(argv[i]);
+    }
+
+    maximum = fileRead(FILENAME);
+
+    allocation = malloc(sizeof(int *) * customers);
+    need = malloc(sizeof(int *) * customers);
+    for (int i = 0; i < customers; i++)
+    {
+        allocation[i] = malloc(sizeof(int) * resources);
+        need[i] = malloc(sizeof(int) * resources);
+    }
 
 }
 
