@@ -1,4 +1,6 @@
  /*
+GitHub Repo: https://github.com/mitchell-mactaggart/CP-386-A4/blob/master/170691850_160886000_a04.c
+
 Name: Hassan Siddiqui
 Email: sidd1850@mylaurier.ca
 Student ID: 170691850
@@ -21,9 +23,10 @@ GitHub Username: mitchell-macTaggart
 #define MAXSIZE 256
 #define FILENAME "sample4_in.txt"
 
+//program variables
 int resources, customers, safe;
 int *available, **maximum, **allocation, **need, *sq;
-
+//program functions
 void runProgram();
 void *runThread(void *thread);
 int **fileRead(char *filename);
@@ -180,7 +183,7 @@ void runProgram(){
 				}
 				//This is a fail safe and checks for any irregularities in the users inputs
 			} else {
-				if (customerAmount >= customers) {
+				if (customerAmount >= customers) {// warnings for out of bound thread or incorrect amount of parameters
 					printf("Thread out of bounds, please try again.\n");
 				} else {
 					printf("Incorrect amount of parameter, please try again.\n");
@@ -226,7 +229,7 @@ void runProgram(){
 						break;
 					}
 				}
-			} else {
+			} else {//warnings for out of bound threads or wrong amount of parameters
 				if (customerAmount >= customers) {
 					printf("Thread out of bounds, please try again.\n");
 				} else {
@@ -236,7 +239,7 @@ void runProgram(){
 			free(sizeArray);
 			sq = checkSafeSeq();
 			printf("Request satisfied.\n");
-			if (sq[0] == -1) {
+			if (sq[0] == -1) {//checks if in a safe state safe should = 1
 				safe = 0;
 				printf("Warning: In a unsafe state, fix before running.\n");
 			} else {
@@ -385,7 +388,7 @@ int *checkSafeSeq() {
 
 	int x;
 	int y;
-
+    // initalize arrays
 	for (x = 0; x < resources; x++) {
 		wk[x] = available[x];
 	}
@@ -395,7 +398,7 @@ int *checkSafeSeq() {
 	}
 
 	int cnt = 0;
-	while (cnt < customers) {
+	while (cnt < customers) {//stops when count is same amount as customers
 		int fg = 0;
 		for (x = 0; x < customers; x++) {
 			if (fnsh[x] == 0) {
