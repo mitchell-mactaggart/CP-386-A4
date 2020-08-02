@@ -265,7 +265,7 @@ void *runThread(void *thread){
     printf("Available:  ");
 
     for(int i = 0; i < resources; i++){
-        printf("%d ", available[*threadId][i]);
+        printf("%d ", available[i]);
     }
     printf("\n");
 
