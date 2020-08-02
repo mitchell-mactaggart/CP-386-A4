@@ -171,7 +171,7 @@ void runProgram(){
 				if (customerAmount >= customers) {
 					printf("Thread out of bounds, please try again.\n");
 				} else {
-					printf("Incorrect parameter count, please try again.\n");
+					printf("Incorrect amount of parameter, please try again.\n");
 				}
 			}
 			free(sizeArray);
@@ -200,7 +200,7 @@ void runProgram(){
 			}
 
 			int customerAmount = sizeArray[0];
-			// Remove from allocation array
+			// Remove from allocation
 			if (customerAmount < customers && ct == resources + 2) {
 				for (int x = 0; x < resources; x++) {
 					if (sizeArray[x + 1] <= allocation[customerAmount][x]) {
@@ -216,7 +216,7 @@ void runProgram(){
 				if (customerAmount >= customers) {
 					printf("Thread out of bounds, please try again.\n");
 				} else {
-					printf("Incorrect parameter count, please try again.\n");
+					printf("Incorrect amount of parameter, please try again.\n");
 				}
 			}
 			free(sizeArray);
@@ -239,9 +239,7 @@ void runProgram(){
 			return 0;
 		} else // user enters invaild input
 		{
-			printf(
-					"\"%s\" Invalid input, valid inputs['RQ','RL','*','Run','exit'].\n",
-					uip);
+			printf("\"%s\" Invalid input, valid inputs['RQ','RL','*','Run','exit'].\n", uip);
 		}
 	}
 }
