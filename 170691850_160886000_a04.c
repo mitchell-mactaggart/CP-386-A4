@@ -11,14 +11,14 @@
 #define FILENAME "sample4_in.txt"
 
 int resources, customers, safe;
-int *available, **maximum, **allocation, **need; 
+int *available, **maximum, **allocation, **need;
 
 void *runThread(void);
 void **fileRead(char *filename);
 
 
 int main (int argc, char *argv[]) {
-    
+
     if (argc < 2)
     {
         printf("4 parameters needed!\n");
@@ -139,7 +139,7 @@ int **fileRead(char *filename) {
     }
 
     int **new_max = malloc(sizeof(int *) * customers);
-    
+
     for (int j = 0; j < customers; j++)
     {
         int *temp = malloc(sizeof(int) * resources);
@@ -158,3 +158,5 @@ int **fileRead(char *filename) {
     }
     return new_max;
 }
+
+//
