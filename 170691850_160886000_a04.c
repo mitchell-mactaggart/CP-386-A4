@@ -22,11 +22,11 @@ GitHub Username: mitchell-macTaggart
 #define FILENAME "sample4_in.txt"
 
 int resources, customers, safe;
-int *available, **maximum, **allocation, **need;
+int *available, **maximum, **allocation, **need, *sequence;
 
 void runProgram();
-void *runThread(void);
-void **fileRead(char *filename);
+void *runThread(void *thread);
+int **fileRead(char *filename);
 int *checkSafeSeq();
 
 
@@ -69,7 +69,7 @@ int main (int argc, char *argv[]) {
 
     printf("Maximum resources:\n");
     for (int i = 0; i < customers; i++){
-        for (int j = 0; j < n; j++){
+        for (int j = 0; j < resources; j++){
             printf("%d", maximum[i][j]);
             if (j < resources - 1)
                 printf(" ");
@@ -116,7 +116,7 @@ void runProgram(){
 
 			printf("Maxmium Resources:\n");
 			for (int x = 0; x < customers; x++) {
-				for (int y = 0; y < n; y++) {
+				for (int y = 0; y < resources; y++) {
 					printf("%d", maximum[x][y]);
 					if (y < resources - 1)
 						printf(" ");
@@ -126,7 +126,7 @@ void runProgram(){
 
 			printf("Allocated Resources:\n");
 			for (int x = 0; x < customers; x++) {
-				for (int y = 0; y < n; y++) {
+				for (int y = 0; y < resources; y++) {
 					printf("%d", allocation[x][y]);
 					if (y < resources - 1)
 						printf(" ");
@@ -161,8 +161,7 @@ void runProgram(){
 			if (customerAmount < customers && ct == resources + 2) {
 				for (int x = 0; x < resources; x++) {
 					allocation[customerAmount][x] = sizeArray[x + 1];
-					need[customerAmount][x] = maximum[customerAmount][x]
-							- allocation[customerAmount][i];
+					need[customerAmount][x] = maximum[customerAmount][x] - allocation[customerAmount][x];
 					if (need[customerAmount][x] < 0) {
 						need[customerAmount][x] = 0;
 					}
@@ -236,7 +235,7 @@ void runProgram(){
 			free(need);
 			free(available);
 			free(sq);
-			return 0;
+			break;
 		} else // user enters invaild input
 		{
 			printf("\"%s\" Invalid input, valid inputs['RQ','RL','*','Run','exit'].\n", uip);
@@ -399,9 +398,8 @@ int *checkSafeSeq() {
 				}
 			}
 		}
-		int q = 0;
 		if (fg == 0) {
-			for (q < customers; q++) {
+			for (int q = 0; q < customers; q++) {
 				sq[q] = -1;
 			}
 			free(wk);
